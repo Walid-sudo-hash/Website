@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planet Guides: Planets, Stars, and Beyond</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair Display&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      background-color: black;
+      font-family: 'Playfair Display', serif;
+      color: #ffffff;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(white, transparent 70%) 0 0 / 10px 10px,
+                  radial-gradient(white, transparent 70%) 5px 5px / 10px 10px;
+      background-repeat: repeat;
+      opacity: 0.08;
+      z-index: 0;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    main {
+      position: relative;
+      z-index: 2;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3em;
+      color: #ffffff;
+      text-shadow: 0 0 20px #red;
+    }
+    h2 {
+      color: #ffffff;
+      font-family: 'Orbitron', sans-serif;
+    }
+    h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: #0202e8;
+    }
+    section {
+      margin-bottom: 40px;
+    }
+    .planet, .phenomenon, .exoplanet {
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+    .planet img, .phenomenon img, .exoplanet img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 10px;
+      margin: 15px 0;
+    }
+    #searchBar {
+      margin: 20px auto;
+      padding: 10px;
+      font-size: 16px;
+      width: 80%;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <main>
+    <header>
+      <h1>Planet Guides</h1>
+      <p>Astral meanings, physical compositions, and celestial wonders of our solar system and beyond.</p>
+      <input type="text" id="searchBar" onkeyup="searchPlanets()" placeholder="Search for a planet..." />
+    </header>
+
+    <section>
+      <h2>Planets of the Solar System</h2>
+
+      <!-- Planets -->
+      <div class="planet">
+        <h3>Mercury</h3>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg" alt="Mercury">
+        <p> Mercury is a rocky, iron-rich world closest to the Sun. It’s a planet of extremes—blistering heat by day, freezing cold by night. In astrology, Mercury rules communication, intellect, and agility To survive Stick to the twilight zone. Only the border between day and night offers a narrow band where temperatures aren’t instantly deadly. Timing and mobility are your lifelines.
+</p> .</p>
+      </div>
+      <div class="planet">
+        <h3>Venus</h3>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg" alt="Venus">
+        <p>Shrouded in thick clouds of sulfuric acid, Venus is a volcanic inferno with a crushing atmosphere. Astrologically, she governs love, beauty, and attraction, but beneath her charm lies danger.
+Survival Tip: Rise above the chaos. Float at 50 kilometers above the surface, where temperatures and pressure resemble Earth. Just make sure your ship is acid-proof.</p>
+      </div>
+      <div class="planet">
+        <h3>Earth</h3>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg" alt="Earth">
+        <p>Our home, rich in life and diversity. Earth is a balanced sphere of air, water, rock, and spirit. It symbolizes grounding, growth, and harmony in astrology.
+Survival Tip: Protect what sustains you. Earth's ecosystems are fragile. Your survival depends on keeping its atmosphere clean and its resources flowing.</p>
+      </div>
+      <div class="planet">
+        <h3>Mars</h3>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg" alt="Mars">
+        <p>Rust-colored and cold, Mars is the planet of war and drive. It whispers promises of colonization with its ancient riverbeds and dusty plains.
+Survival Tip: Bring warmth and shelter. Thin air and subzero temperatures require a pressurized habitat and a reliable heat source. Solar panels and ingenuity are key.</p>
+      </div>
+      <div class="planet">
+        <h3>Jupiter</h3>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg" alt="Jupiter">
+        <p>Jupiter, the gas giant, is a swirling storm of hydrogen, helium, and mystery. In astrology, he represents expansion, luck, and wisdom.
+Survival Tip: Don’t land. Ever. You can’t survive on Jupiter’s surface—it doesn’t have one. But you might orbit safely in a radiation-shielded station, observing the storms from afar.</p>
+      </div>
+      <div class="planet">
+        <h3>Saturn</h3>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg" alt="Saturn">
+        <p>, Majestic and disciplined, Saturn’s icy rings and muted hues reflect his association with karma, structure, and time.
+Survival Tip: Avoid the rings. Their beauty hides danger—ice and rock moving at breakneck speed. Keep your ship in a safe orbital path.
+
+</p>
+      </div>
+      <div class="planet">
+        <h3>Uranus</h3>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg" alt="Uranus">
+        <p>Tilted on its side, Uranus spins like a rolling marble. It’s a cold world of methane clouds and mystery. Astrologically, it rules innovation and disruption.
+Survival Tip: Brace for magnetic chaos. Its magnetic field is unpredictable. Navigation and shielding systems must adapt to rapid, tilted changes.</p>
+      </div>
+      <div class="planet">
+        <h3>Neptune</h3>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg" alt="Neptune">
+        <p> deep blue ice giant, Neptune is a realm of storms and hidden currents. It’s linked to dreams, illusions, and the subconscious.
+Survival Tip: Watch for wind. Neptune’s winds are the fastest in the solar system—up to 1,500 mph. Anchor any floating platform with extreme precision.</p>
+      </div>
+      <div class="planet">
+        <h3>Pluto (Dwarf Planet)</h3>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Nh-pluto-in-true-color_2x_JPEG-edit-frame.jpg" alt="Pluto">
+        <p>Tiny and distant, Pluto is icy, dark, and transformative. In astrology, it represents death, rebirth, and the underworld.
+Survival Tip: Use nuclear warmth. With sunlight too faint to sustain you, a radioactive heat source (like RTGs) is your best chance at surviving the frozen stillness.
+
+</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Celestial Phenomena</h2>
+      <div class="phenomenon">
+        <h3>Black Holes</h3>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfMS275peaSeFy5M53wvx_idH6GMzvYKuHMDV_xrk186k_Q5LPuIz_zS6n&s=10" alt="Black Hole">
+        <p>Regions of spacetime with gravitational pulls so strong that nothing can escape. Spiritually, they symbolize the unknown, death, and deep transformation.</p>
+      </div>
+      <div class="phenomenon">
+        <h3>Supernovas</h3>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3jWhdpHqH2yOjqZzzAkCRXS_DaocWOn75uQB1XrHY-tCo6PkaiZmYHcg&s=10" alt="Supernova">
+        <p>Explosions of dying stars that scatter elements across the galaxy. Represent intense release, cosmic renewal, and divine change.</p>
+        <h3>Rings of Saturn (NEW)</h3>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/PIA17172_Saturn_eclipse_mosaic_bright_crop.jpg/960px-PIA17172_Saturn_eclipse_mosaic_bright_crop.jpg" alt="Rings of Saturn">
+        <p>Saturn's rings are one of the most iconic and spectacular features in our solar system. They are vast, bright bands encircling the planet, extending up to 282,000 km (175,000 miles) wide but incredibly thin—only about 10 meters (33 feet) thick in most places. The rings are divided into several main parts named alphabetically (A, B, C, D, E, F, and G rings), with the A and B rings being the most prominent and dense.</p>
+        <h3>Comets</h3>
+        <img src="https://www.astronomy.com/wp-content/uploads/sites/2/2023/02/Bringer.jpg" alt="Comets">
+        <p>**Comets** are icy space objects made of dust, rock, and frozen gases. When they get close to the Sun, they heat up and release gas and dust, forming a glowing **coma** and often a **tail**. Comets come from the **Kuiper Belt** or the **Oort Cloud**, and they orbit the Sun in long, oval paths. They become visible when they enter the inner solar system.
+</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Exoplanets</h2>
+      
+      <!-- Exoplanets -->
+      <div class="exoplanet">
+        <h3>Kepler-452b</h3>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Nfex5nLVfG_p_x0p_iHNoeEmVEJEtIWclJJf-FM0mSkjLWmloCZTfH0&s=10" alt="Kepler-452b">
+        <p>Known as "Earth's cousin", this exoplanet orbits within the habitable zone of its star, Kepler-452, and has similar conditions to Earth. It's a prime target for the search for extraterrestrial life.</p>
+      </div>
+      <div class="exoplanet">
+        <h3>Proxima Centauri b</h3>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGY_2PDgxyPkA8awuvRI1JXFPIMZ3uOUcFH00Tz3Jb_xleaIaVd-ZjWX4&s=10" alt="Proxima Centauri b">
+        <p>Located in the habitable zone of the closest star to our Sun, Proxima Centauri b has a great potential for life. Its conditions are similar to those of Earth, though it may be subject to intense radiation.</p>
+      </div>
+      <div class="exoplanet">
+        <h3>TRAPPIST-1e</h3>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4YN-rkK5gnhQ52fEWVvGq1DdUZETXZTKDQQ&usqp=CAU" alt="TRAPPIST-1e">
+        <p>One of the seven Earth-like planets orbiting the star TRAPPIST-1, TRAPPIST-1e is in the habitable zone and may have conditions suitable for liquid water.</p>
+      </div>
+      
+      </section>
+
+  </main>
+
+  <script>
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const stars = [];
+    for (let i = 0; i < 200; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 1.5,
+        speed: Math.random() * 0.5 + 0.1
+      });
+    }
+
+    function animateStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let star of stars) {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+
+        star.y += star.speed;
+        if (star.y > canvas.height) {
+          star.y = 0;
+          star.x = Math.random() * canvas.width;
+        }
+      }
+      requestAnimationFrame(animateStars);
+    }
+
+    animateStars();
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    function searchPlanets() {
+      let input = document.getElementById('searchBar').value.toLowerCase();
+      let items = document.querySelectorAll('.planet, .exoplanet');
+      items.forEach(item => {
+        const name = item.querySelector('h3').textContent.toLowerCase();
+        item.style.display = name.includes(input) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
