@@ -1,40 +1,366 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Planet Guides: Planets, Stars, and Beyond</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair Display&family=Orbitron:wght@600&display=swap" rel="stylesheet">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      background-color: black;
-      font-family: 'Playfair Display', serif;
-      color: #ffffff;
+import { useState, useEffect, useCallback } from 'react';
+import { Globe, Sparkles, Zap, Satellite, Rocket, Star, Telescope, Meteor } from 'lucide-react';
+
+// Mock NASA API data - replace with actual NASA API calls
+const useNasaData = () => {
+  const [nasaImages, setNasaImages] = useState([]);
+  const [marsWeather, setMarsWeather] = useState(null);
+  const [astronomyPic, setAstronomyPic] = useState(null);
+
+  useEffect(() => {
+    // Mock NASA data - in real implementation, use NASA API
+    setNasaImages([
+      {
+        title: "Hubble Deep Field",
+        url: "https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=800&h=600&fit=crop",
+        description: "One of Hubble's most famous images showing thousands of galaxies"
+      },
+      {
+        title: "Pillars of Creation",
+        url: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&h=600&fit=crop",
+        description: "Eagle Nebula's star-forming region captured by Hubble"
+      }
+    ]);
+
+    setMarsWeather({
+      temp: -63,
+      season: "Winter",
+      pressure: 718,
+      sol: 1256
+    });
+
+    setAstronomyPic({
+      title: "Today's Astronomy Picture",
+      url: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&h=600&fit=crop",
+      explanation: "A stunning cosmic phenomenon captured by NASA's telescopes"
+    });
+  }, []);
+
+  return { nasaImages, marsWeather, astronomyPic };
+};
+
+const Index = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { nasaImages, marsWeather, astronomyPic } = useNasaData();
+
+  // Memoized data for performance
+  const planets = useCallback([
+    {
+      id: 1,
+      name: "Mercury",
+      image: "https://images.unsplash.com/photo-1614313913007-2b4ae8ce32e6?w=400&h=300&fit=crop",
+      description: "Closest planet to the Sun with extreme temperature variations",
+      distance: "0.39 AU",
+      size: "0.38 Earth masses",
+      facts: ["Fastest orbiting planet", "No atmosphere", "Heavily cratered"],
+      nasaData: { missions: ["MESSENGER", "Mariner 10"], discovery: "Ancient times" }
+    },
+    {
+      id: 2,
+      name: "Mars",
+      image: "https://images.unsplash.com/photo-1451186859696-371d9477be93?w=400&h=300&fit=crop",
+      description: "The Red Planet with evidence of past water activity",
+      distance: "1.52 AU",
+      size: "0.11 Earth masses",
+      facts: ["Home to Olympus Mons", "Has two moons", "24.6 hour day"],
+      nasaData: { missions: ["Perseverance", "Curiosity", "Opportunity"], discovery: "Ancient times" }
     }
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(white, transparent 70%) 0 0 / 10px 10px,
-                  radial-gradient(white, transparent 70%) 5px 5px / 10px 10px;
-      background-repeat: repeat;
-      opacity: 0.08;
-      z-index: 0;
+  ], []);
+
+  const phenomena = useCallback([
+    {
+      id: 1,
+      name: "Black Holes",
+      image: "https://images.unsplash.com/photo-1642784353721-8c43d4c6c6a9?w=400&h=300&fit=crop",
+      description: "Cosmic phenomena with gravity so strong nothing escapes",
+      type: "phenomenon",
+      facts: ["Formed from massive stars", "Distort spacetime", "Have event horizons"],
+      nasaData: { missions: ["Chandra X-ray Observatory"], discovery: "1916" }
     }
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 1;
-    }
-    main {
-      position: relative;
+  ], []);
+
+  // Optimized filtering
+  const filteredData = useCallback(() => {
+    const query = searchQuery.toLowerCase();
+    if (!query) return { planets, phenomena };
+
+    return {
+      planets: planets.filter(p => 
+        p.name.toLowerCase().includes(query) ||
+        p.description.toLowerCase().includes(query) ||
+        p.facts.some(f => f.toLowerCase().includes(query))
+      ),
+      phenomena: phenomena.filter(p => 
+        p.name.toLowerCase().includes(query) ||
+        p.description.toLowerCase().includes(query)
+      )
+    };
+  }, [searchQuery, planets, phenomena]);
+
+  const { planets: filteredPlanets, phenomena: filteredPhenomena } = filteredData();
+
+  const handleItemClick = useCallback(async (item) => {
+    setIsLoading(true);
+    setSelectedItem(null); // Reset for animation
+    
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 150));
+    
+    setSelectedItem(item);
+    setIsLoading(false);
+  }, []);
+
+  const SectionHeader = ({ icon: Icon, title, count, color = "from-blue-500 to-purple-500" }) => (
+    <div className="flex items-center gap-4 mb-8">
+      <div className="flex items-center gap-3">
+        <div className={`p-3 bg-gradient-to-r ${color} rounded-xl shadow-lg transform hover:scale-110 transition-transform`}>
+          <Icon className="w-6 h-6 text-white" />
+        </div>
+        <h2 className="text-3xl font-bold text-white drop-shadow-lg">
+          {title}
+        </h2>
+      </div>
+      <div className="flex-1 h-px bg-gradient-to-r from-white/30 to-transparent" />
+      <span className="text-sm font-medium text-white bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
+        {count} {count === 1 ? 'Item' : 'Items'}
+      </span>
+    </div>
+  );
+
+  const NasaCard = ({ title, image, description, data, icon: Icon }) => (
+    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105">
+      <div className="flex items-center gap-3 mb-4">
+        {Icon && <Icon className="w-6 h-6 text-yellow-400" />}
+        <h3 className="text-xl font-bold text-white">{title}</h3>
+      </div>
+      <img src={image} alt={title} className="w-full h-48 object-cover rounded-lg mb-4" />
+      <p className="text-gray-200 mb-3">{description}</p>
+      {data && (
+        <div className="text-sm text-gray-300 space-y-1">
+          {Object.entries(data).map(([key, value]) => (
+            <div key={key} className="flex justify-between">
+              <span className="capitalize">{key}:</span>
+              <span className="text-white">{value}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div className={`min-h-screen transition-all duration-500 ${
+      selectedItem 
+        ? 'bg-gradient-to-br from-yellow-400/20 via-orange-500/30 to-red-500/20' 
+        : 'bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900'
+    }`}>
+      
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              opacity: Math.random() * 0.5 + 0.1
+            }}
+          />
+        ))}
+      </div>
+
+      <main className="relative z-10 container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">
+            🌌 Cosmic Explorer
+          </h1>
+          <p className="text-gray-300 text-lg">Explore NASA's universe database</p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="max-w-2xl mx-auto mb-12">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search planets, phenomena, NASA missions..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-6 py-4 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl text-white placeholder-gray-300 focus:outline-none focus:border-white/40 focus:scale-105 transition-all"
+            />
+            <Search className="absolute right-4 top-4 w-5 h-5 text-gray-300" />
+          </div>
+        </div>
+
+        {/* NASA Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 text-center border border-white/20">
+            <Rocket className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-white">47</div>
+            <div className="text-gray-300">Active Missions</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 text-center border border-white/20">
+            <Telescope className="w-8 h-8 text-green-400 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-white">5,284</div>
+            <div className="text-gray-300">Exoplanets Found</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 text-center border border-white/20">
+            <Satellite className="w-8 h-8 text-red-400 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-white">24/7</div>
+            <div className="text-gray-300">Live Space Data</div>
+          </div>
+        </div>
+
+        {/* Selected Item Focus View */}
+        {selectedItem && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-lg z-50 flex items-center justify-center p-4">
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="relative">
+                <button
+                  onClick={() => setSelectedItem(null)}
+                  className="absolute top-4 right-4 text-white bg-red-500 rounded-full p-2 z-10 hover:scale-110 transition-transform"
+                >
+                  ✕
+                </button>
+                <img 
+                  src={selectedItem.image} 
+                  alt={selectedItem.name}
+                  className="w-full h-64 object-cover rounded-t-3xl"
+                />
+                <div className="p-8">
+                  <h2 className="text-4xl font-bold text-white mb-4">{selectedItem.name}</h2>
+                  <p className="text-gray-300 text-lg mb-6">{selectedItem.description}</p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div className="bg-white/10 rounded-xl p-4">
+                      <h3 className="text-white font-semibold mb-2">Quick Facts</h3>
+                      <ul className="text-gray-300 space-y-1">
+                        {selectedItem.facts?.map((fact, i) => (
+                          <li key={i}>• {fact}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div className="bg-white/10 rounded-xl p-4">
+                      <h3 className="text-white font-semibold mb-2">NASA Missions</h3>
+                      <div className="text-gray-300">
+                        {selectedItem.nasaData?.missions?.join(", ")}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Solar System Planets */}
+        <section className="mb-12">
+          <SectionHeader 
+            icon={Globe} 
+            title="Solar System" 
+            count={filteredPlanets.length}
+            color="from-blue-500 to-cyan-500"
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredPlanets.map((planet) => (
+              <div
+                key={planet.id}
+                onClick={() => handleItemClick(planet)}
+                className="bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/20 hover:border-white/40 hover:scale-105 transition-all duration-300 cursor-pointer group"
+              >
+                <img 
+                  src={planet.image} 
+                  alt={planet.name}
+                  className="w-full h-40 object-cover rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300"
+                />
+                <h3 className="text-xl font-bold text-white mb-2">{planet.name}</h3>
+                <p className="text-gray-300 text-sm mb-3">{planet.description}</p>
+                <div className="flex justify-between text-xs text-gray-400">
+                  <span>{planet.distance}</span>
+                  <span>{planet.size}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* NASA Gallery */}
+        <section className="mb-12">
+          <SectionHeader 
+            icon={Star} 
+            title="NASA Gallery" 
+            count={nasaImages.length}
+            color="from-yellow-500 to-orange-500"
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {nasaImages.map((image, index) => (
+              <NasaCard
+                key={index}
+                title={image.title}
+                image={image.url}
+                description={image.description}
+                icon={Satellite}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Mars Weather */}
+        {marsWeather && (
+          <section className="mb-12">
+            <SectionHeader 
+              icon={Meteor} 
+              title="Mars Weather" 
+              count={1}
+              color="from-red-500 to-orange-500"
+            />
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-white">{marsWeather.temp}°C</div>
+                  <div className="text-gray-300">Temperature</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white">{marsWeather.season}</div>
+                  <div className="text-gray-300">Season</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white">{marsWeather.pressure} Pa</div>
+                  <div className="text-gray-300">Pressure</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white">Sol {marsWeather.sol}</div>
+                  <div className="text-gray-300">Mars Day</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Loading Overlay */}
+        {isLoading && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex items-center justify-center">
+            <div className="text-white text-2xl animate-pulse">Loading cosmic data...</div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+// Search icon component
+const Search = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  </svg>
+);
+
+export default Index;      position: relative;
       z-index: 2;
       padding: 20px;
     }
